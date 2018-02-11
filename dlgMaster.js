@@ -1,12 +1,14 @@
-// CQSDialog.js
+// dlgMaster.js
+// Copyright (c) 2018, Norman H. Strassner
+
 
 // Callers:
-// 1. create new cqDialog object and fill in the details
+// 1. create new dlgMaster object and fill in the details
 // 2. if you need more buttons, use addButtons function and pass object to Daddbuttons
 // 3. Fillsin openCB and closeCB functions ****
 
 /* call example:
-    var xxx = new cqDialog();
+    var xxx = new dlgMaster();
     d.pgkkeys     = false;      // For keyboard keys: true if returning to package list, false if returning to review page
     d.modal       = true;        // True if modal
     d.resizable   = false;
@@ -52,12 +54,12 @@ var dialogCLOSED;
 var currentDialogBox=null;
 var currentDialog=null;
 
-cqDialog.dialogWidth = 0;
-cqDialog.dialogLeft = 0;
-cqDialog.dialogTop = 0;
+dlgMaster.dialogWidth = 0;
+dlgMaster.dialogLeft = 0;
+dlgMaster.dialogTop = 0;
 
 function messageBox( msg ) {
-    var d = new cqDialog( {
+    var d = new dlgMaster( {
     src       : "messageboxW",
     title     : "Information",
     markup    : msg,
@@ -70,24 +72,24 @@ function messageBox( msg ) {
     });
 }
 
-cqDialog.theVersion = ".01";
+dlgMaster.theVersion = ".01";
 
 /* Constructor */
-function cqDialog( options ) {
-    cqDialog.inst = cqDialog.init(options);  
-    currentDialogBox = cqDialog.inst;
-    return cqDialog.inst;
+function dlgMaster( options ) {
+    dlgMaster.inst = dlgMaster.init(options);  
+    currentDialogBox = dlgMaster.inst;
+    return dlgMaster.inst;
 }
 
-cqDialog.close = function() {
+dlgMaster.close = function() {
         //alert("closing");
-        if( cqDialog.onClose ) { cqDialog.onClose(); }
+        if( self.closeCB ) { self.closeCB(self); }
         $( "#theDialogBox" ).remove();
         //currentDialog=null;    
 };
 
-cqDialog.prototype = {
-	constructor : cqDialog,
+dlgMaster.prototype = {
+	constructor : dlgMaster,
 
     version : function() {
         return this.theVersion;
@@ -106,7 +108,7 @@ cqDialog.prototype = {
 
 /* */
 // Data object for theDialogBox
-cqDialog.init = function ( options ) {
+dlgMaster.init = function ( options ) {
     this.pgkkeys     = (typeof options.pgkkeys    !== 'undefined') ? options.pgkkeys     : false;              // For keyboard keys: true if returning to package list, false if returning to review page
     this.modal       = (typeof options.modal      !== 'undefined') ? options.modal       : true;               // True if modal
     this.resizable   = (typeof options.resizable  !== 'undefined') ? options.resizable   : false;  
@@ -145,7 +147,7 @@ function addButtons( Bid, Btext, Bbuttonclass, Bonclick ) {
 }
 
 /* */
-cqDialog.theDialog = function() {
+dlgMaster.theDialog = function() {
     self=this;
     //var elebase= ((this.posParent) ? $(this.posParent) : ($("#lbwrapper").length === 0) ? $("#page") : $("#lbwrapper"));
     $('<div id="theDialogBox" class="theDialogBox"style="overflow-y:auto"></div>').dialog({
@@ -218,8 +220,8 @@ cqDialog.theDialog = function() {
                 if( !self.modal ) {
                     var h = "<div id='dlg-xtra-btns' style='display:inline;float:right;margin-right: 10px;'>" +
                             "<img style='height:20px; width:20px;margin-top:2px;margin-right:10px;' class='move-window-icon'/>" +
-                            "<input id='min-dlg' type=button onclick='cqDialog.dialogMin();' style='height:20px; width:20px;margin-top:2px;margin-right:4px;' class='ui-icon ui-icon-minusthick'/>" +
-                            "<input id='max-dlg' type=button onclick='cqDialog.dialogMax();' style='height:20px; width:20px;margin-top:2px;margin-right:4px;' class='ui-icon ui-icon-newwin' disabled/>" +
+                            "<input id='min-dlg' type=button onclick='dlgMaster.dialogMin();' style='height:20px; width:20px;margin-top:2px;margin-right:4px;' class='ui-icon ui-icon-minusthick'/>" +
+                            "<input id='max-dlg' type=button onclick='dlgMaster.dialogMax();' style='height:20px; width:20px;margin-top:2px;margin-right:4px;' class='ui-icon ui-icon-newwin' disabled/>" +
                             "</div>";                    
                     $(".ui-dialog-titlebar").append(h);
                     $(".ui-dialog .ui-dialog-title").addClass('ui-dialog-title-75-width');
@@ -271,7 +273,7 @@ cqDialog.theDialog = function() {
 };
 
 /* */
-cqDialog.dialogMin = function() {
+dlgMaster.dialogMin = function() {
     $("#min-dlg").prop('disabled', true);
     $("#max-dlg").prop('disabled', false);
     
@@ -286,7 +288,7 @@ cqDialog.dialogMin = function() {
 };
 
 /* */
-cqDialog.dialogMax = function() {
+dlgMaster.dialogMax = function() {
     $("#min-dlg").prop('disabled', false);
     $("#max-dlg").prop('disabled', true);
     $(".ui-dialog").css('width', this.dialogWidth);
@@ -296,12 +298,12 @@ cqDialog.dialogMax = function() {
     $(".ui-dialog .ui-dialog-buttonpane").show();
 };
 
-cqDialog.test = function() {
+dlgMaster.test = function() {
     return "hello";
 };
 
 /* */
-cqDialog.makeid = function(l) {
+dlgMaster.makeid = function(l) {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   for (var i = 0; i < l; i++) {
